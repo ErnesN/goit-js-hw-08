@@ -12,10 +12,10 @@
     "url": "git+https://github.com/ErnesN/goit-js-hw-08.git"
   },
   "keywords": [],
-  "author": "Alexander Repeta <alexander.repeta@gmail.com>",
+  "author": "Nafieiev",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/goitacademy/parcel-project-template/issues"
+    "url": "https://github.com/ErnesN/goit-js-hw-08/issues"
   },
   "dependencies": {
     "modern-normalize": "^1.1.0"
