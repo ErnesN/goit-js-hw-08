@@ -11,8 +11,8 @@ import '../css/03-feedback.css';
 // Для цього додай до проекту і використовуй бібліотеку lodash.throttle.
 const refs = {
   form: document.querySelector('.feedback-form'),
-  inputEmail: document.querySelector('input'),
-  inputMessage: document.querySelector('textarea'),
+  inputEmail: document.querySelector('.feedback-form [name="email"]'),
+  inputMessage: document.querySelector('[name="message"]'),
 };
 const STORAGE_KEY = 'feedback-form-state';
 const formData = {};
@@ -25,14 +25,11 @@ refs.form.addEventListener('input', throttle(onTextareaImput, 500));
 function onSubmitForm(e) {
   e.preventDefault();
 
+  formData.email = refs.inputEmail.value;
+  formData.message = refs.inputMessage.value;
   localStorage.removeItem(STORAGE_KEY);
-  if (e.target.email.value === '' || e.target.message.value === '') {
-    alert('Enter email and message,please!');
-    return;
-  } else {
-    console.log(formData);
-    e.currentTarget.reset();
-  }
+
+  e.currentTarget.reset();
 }
 
 function onTextareaImput(e) {
@@ -42,9 +39,10 @@ function onTextareaImput(e) {
 
 function populateMessageOutput() {
   const savedMessage = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
-  if (savedMessage === null) return;
-  console.log(savedMessage);
-  refs.inputMessage.value = savedMessage['message'] || '';
-  refs.inputEmail.value = savedMessage['email'] || '';
+  if (savedMessage) {
+    refs.inputEmail.value = savedMessage.email;
+  }
+  if (savedMessage) {
+    refs.inputMessage.value = savedMessage.message;
+  }
 }
