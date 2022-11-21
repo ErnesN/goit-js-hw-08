@@ -11,7 +11,7 @@ import '../css/03-feedback.css';
 // Для цього додай до проекту і використовуй бібліотеку lodash.throttle.
 const refs = {
   form: document.querySelector('.feedback-form'),
-  inputEmail: document.querySelector('.feedback-form [name="email"]'),
+  inputEmail: document.querySelector('[name="email"]'),
   inputMessage: document.querySelector('[name="message"]'),
 };
 const STORAGE_KEY = 'feedback-form-state';
@@ -29,7 +29,13 @@ function onSubmitForm(e) {
   formData.message = refs.inputMessage.value;
   localStorage.removeItem(STORAGE_KEY);
 
-  e.currentTarget.reset();
+  if (e.target.email.value === '' || e.target.message.value === '') {
+    alert('Заповніть всі поля!');
+    return;
+  } else {
+    refs.form.reset();
+    console.log('formData: ', formData);
+  }
 }
 
 function onTextareaImput(e) {
@@ -39,10 +45,9 @@ function onTextareaImput(e) {
 
 function populateMessageOutput() {
   const savedMessage = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
   if (savedMessage) {
     refs.inputEmail.value = savedMessage.email;
-  }
-  if (savedMessage) {
     refs.inputMessage.value = savedMessage.message;
   }
 }
