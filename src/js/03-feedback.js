@@ -11,43 +11,40 @@ import '../css/03-feedback.css';
 // Для цього додай до проекту і використовуй бібліотеку lodash.throttle.
 const refs = {
   form: document.querySelector('.feedback-form'),
-  inputEmail: document.querySelector('[name="email"]'),
-  inputMessage: document.querySelector('[name="message"]'),
 };
-const STORAGE_KEY = 'feedback-form-state';
-const formData = {};
 
-populateMessageOutput();
+const LOCALSTORAGE_KEY = 'feedback-form-state';
 
-refs.form.addEventListener('submit', onSubmitForm);
-refs.form.addEventListener('input', throttle(onTextareaImput, 500));
+refs.form.addEventListener('input', throttle(onInputForm, 500));
+refs.form.addEventListener('submit', onFormSubmit);
+window.addEventListener('load', updateOutputOnload);
 
-function onSubmitForm(e) {
+function onInputForm(e) {
   e.preventDefault();
-
-  formData.email = refs.inputEmail.value;
-  formData.message = refs.inputMessage.value;
-  localStorage.removeItem(STORAGE_KEY);
-
-  if (e.target.email.value === '' || e.target.message.value === '') {
-    alert('Заповніть всі поля!');
-    return;
-  } else {
-    refs.form.reset();
-    console.log('formData: ', formData);
-  }
+  const message = refs.form.elements.message.value;
+  const email = refs.form.elements.email.value;
+  localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify({ message, email }));
 }
 
-function onTextareaImput(e) {
-  formData[e.target.name] = e.target.value;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+function updateOutputOnload(e) {
+  e.preventDefault();
+  const outputObjectContent = JSON.parse(
+    localStorage.getItem(LOCALSTORAGE_KEY)
+  ) || {
+    email: '',
+    message: '',
+  };
+  const { email, message } = outputObjectContent;
+  refs.form.elements.email.value = email;
+  refs.form.elements.message.value = message;
 }
 
-function populateMessageOutput() {
-  const savedMessage = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
-  if (savedMessage) {
-    refs.inputEmail.value = savedMessage.email;
-    refs.inputMessage.value = savedMessage.message;
-  }
+function onFormSubmit(e) {
+  e.preventDefault();
+  const {
+    elements: { email, message },
+  } = e.currentTarget;
+  console.log({ email: email.value, message: message.value });
+  localStorage.clear();
+  refs.form.reset();
 }
